@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 
         // read data from the client
         bytes_read = recv(client, buf, sizeof(buf), 0);
-        if( bytes_read > 0 ) {
+        if( bytes_read >= 0 ) {
             printf("received [%s]\n", buf);
         }
     }
