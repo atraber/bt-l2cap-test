@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     struct sockaddr_l2 addr = { 0 };
     int s, status;
     char *message = "hello!";
-    char dest[18] = "01:23:45:67:89:AB";
+    char dest[18] = "E0:06:E6:BA:DA:B3";
 
     if(argc < 2)
     {
@@ -31,12 +31,18 @@ int main(int argc, char **argv)
     // connect to server
     status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
 
-    // send a message
-    if( status == 0 ) {
-        status = write(s, "hello!", 6);
-    }
+    char buffer[256];
+    while(1)
+    {
+        gets(buffer);
+	printf("Sending message: %s\n", buffer);
+        // send a message
+        if( status == 0 ) {
+            status = write(s, buffer, strlen(buffer));
+        }
 
-    if( status < 0 ) perror("uh oh");
+        if( status < 0 ) perror("uh oh");
+    }
 
     close(s);
 }
