@@ -32,16 +32,19 @@ int main(int argc, char **argv)
     status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
 
     char buffer[256];
+    int i = 0;
     while(1)
     {
-        gets(buffer);
+	sprintf(buffer, "This is %d", i++);
 	printf("Sending message: %s\n", buffer);
         // send a message
-        if( status == 0 ) {
-            status = write(s, buffer, strlen(buffer));
-        }
 
-        if( status < 0 ) perror("uh oh");
+        status = send(s, buffer, strlen(buffer), 0);
+
+	printf("Status was: %d\n", status);
+        if(status < 0) perror("uh oh");
+
+	sleep(1);
     }
 
     close(s);
