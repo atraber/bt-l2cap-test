@@ -31,6 +31,11 @@ int main(int argc, char **argv)
     // connect to server
     status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
 
+    if(status < 0)
+    {
+        perror("Could not connect");
+    }
+
     char buffer[256];
     int i = 0;
     while(1)

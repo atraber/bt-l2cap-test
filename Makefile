@@ -5,7 +5,7 @@ CFLAGS        = -Wall -c
 CXXFLAGS      = -pipe -g -Wall -W
 LDFLAGS       = -lbluetooth
 
-all: l2cap-client.out l2cap-server.out l2cap-server-send.out l2cap-client-recv.out i2c-test.out i2c-pong.out simplescan.out
+all: l2cap-client.out l2cap-server.out l2cap-server-send.out l2cap-client-recv.out i2c-test.out i2c-pong.out simplescan.out i2c-led.out
 
 l2cap-client.o: l2cap-client.c
 	${CC} $^ ${CFLAGS} -o $@
@@ -48,3 +48,10 @@ simplescan.o: simplescan.c
 
 simplescan.out: simplescan.o
 	${CC} $^ ${LDFLAGS} -o $@
+
+i2c-led.o: i2c-led.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $^
+
+i2c-led.out: i2c-led.o
+	$(LINK) $(LDFLAGS) -o $@ $^
+
