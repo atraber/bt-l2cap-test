@@ -193,9 +193,9 @@ int main(int argc, char **argv)
     int s, status;
     char dest[18] = "E0:06:E6:BA:DA:B3";
 
-    if(argc < 2)
+    if(argc < 4)
     {
-        fprintf(stderr, "usage: %s <bt_addr> <i2c_addr> <first_cmd> <sec_cmd>\n", argv[0]);
+        fprintf(stderr, "usage: %s <bt_addr> <i2c_addr> <cmd>\n", argv[0]);
         exit(2);
     }
 
@@ -221,15 +221,25 @@ int main(int argc, char **argv)
 
 
     int i2cAddr = strtol(argv[2], NULL, 0);
-    unsigned int commandLength = argc > 4 ? 2 : 1;
+    unsigned int commandLength = argc > 3 ? 1 : 0;
 
-    char* command = (char*)malloc(commandLength);
-    command[0] = strtol(argv[3], NULL, 0);
+    char* command = NULL;
+    if(commandLength != 0)
+    {
+        command = (char*)malloc(commandLength);
+        command[0] = strtol(argv[3], NULL, 0);
+    }
 
+    unsigned int readLength = 1;
     if(argc > 4)
-        command[1] = strtol(argv[4], NULL, 0);
-
-    unsigned int readLength = 0;
+    {
+        if(argv[4][0] == 'b')
+            readLength = 1;
+        else if(argv[4][0] == 'w')
+            readLength = 2;
+        else
+            readLength = atoi(argv[4]);
+    }
 
 
     BTI2CPacket packet;
@@ -238,9 +248,11 @@ int main(int argc, char **argv)
     packet.request = 1;
     packet.slaveAddress = i2cAddr;
     packet.commandLength = commandLength;
-    packet.commandBuffer = (char*)malloc(packet.commandLength);
-
-    memcpy(packet.commandBuffer, command, packet.commandLength);
+    if(packet.commandLength != 0)
+    {
+        packet.commandBuffer = (char*)malloc(packet.commandLength);
+        memcpy(packet.commandBuffer, command, packet.commandLength);
+    }
 
     packet.readLength = readLength;
 
