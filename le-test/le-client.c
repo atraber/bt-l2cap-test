@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     }
 
     // allocate a socket
-    s = socket(PF_BLUETOOTH, SOCK_SEQPACKET, BTPROTO_L2CAP);
+    s = socket(PF_BLUETOOTH, SOCK_DGRAM, BTPROTO_L2CAP);
 
     if(s < 0)
     {
@@ -64,20 +64,40 @@ int main(int argc, char **argv)
         exit(2);
     }
 
-    char buffer[256];
-    int i = 0;
-    while(1)
+    int bSend = 0;
+
+    if(bSend)
     {
-        sprintf(buffer, "This is %d", i++);
-        printf("Sending message: %s\n", buffer);
 
-        // send a message
-        status = send(s, buffer, strlen(buffer), 0);
+        char buffer[256];
+        int i = 0;
+        while(1)
+        {
+            sprintf(buffer, "This is %d", i++);
+            printf("Sending message: %s\n", buffer);
 
-        printf("Status was: %d\n", status);
-        if(status < 0) perror("uh oh");
+            // send a message
+            status = send(s, buffer, strlen(buffer), 0);
 
-        sleep(1);
+            printf("Status was: %d\n", status);
+            if(status < 0) perror("uh oh");
+
+            sleep(1);
+        }
+    }
+    else
+    {
+        char buffer[256];
+
+        while(1)
+        {
+            recv(s, buffer, 256, 0);
+
+            printf("Status was: %d\n", status);
+            if(status < 0) perror("uh oh");
+
+            sleep(1);
+        }
     }
 
     close(s);
